@@ -90,59 +90,60 @@
 
 安装需要的包
 
-apt-get update
-apt-get install -y build-essential autotools-dev libtool autoconf automake pkg-config cmake \
+    apt-get update
+    apt-get install -y build-essential autotools-dev libtool autoconf automake pkg-config cmake \
                    openssl libssl-dev libcurl4-openssl-dev libconfig++-dev \
                    libboost-all-dev libgmp-dev libmysqlclient-dev libzookeeper-mt-dev \
                    libzmq3-dev libgoogle-glog-dev libhiredis-dev zlib1g zlib1g-dev \
                    libsodium-dev libprotobuf-dev protobuf-compiler
 
-# zmq-v4.1.5
-mkdir -p /root/source && cd /root/source
-wget https://github.com/zeromq/zeromq4-1/releases/download/v4.1.5/zeromq-4.1.5.tar.gz
-tar zxvf zeromq-4.1.5.tar.gz
-cd zeromq-4.1.5
-./autogen.sh && ./configure && make -j $CPUS
-make check && make install && ldconfig
+    # zmq-v4.1.5
+    mkdir -p /root/source && cd /root/source
+    wget https://github.com/zeromq/zeromq4-1/releases/download/v4.1.5/zeromq-4.1.5.tar.gz
+    tar zxvf zeromq-4.1.5.tar.gz
+    cd zeromq-4.1.5
+    ./autogen.sh && ./configure && make -j $CPUS
+    make check && make install && ldconfig
 
-# glog-v0.3.4
-mkdir -p /root/source && cd /root/source
-wget https://github.com/google/glog/archive/v0.3.4.tar.gz
-tar zxvf v0.3.4.tar.gz
-cd glog-0.3.4
-./configure && make -j $CPUS && make install
+    # glog-v0.3.4
+    mkdir -p /root/source && cd /root/source
+    wget https://github.com/google/glog/archive/v0.3.4.tar.gz
+    tar zxvf v0.3.4.tar.gz
+    cd glog-0.3.4
+    ./configure && make -j $CPUS && make install
 
-# librdkafka-v0.9.1
-apt-get install -y zlib1g zlib1g-dev
-mkdir -p /root/source && cd /root/source
-wget https://github.com/edenhill/librdkafka/archive/0.9.1.tar.gz
-tar zxvf 0.9.1.tar.gz
-cd librdkafka-0.9.1
-./configure && make -j $CPUS && make install
+    # librdkafka-v0.9.1
+    apt-get install -y zlib1g zlib1g-dev
+    mkdir -p /root/source && cd /root/source
+    wget https://github.com/edenhill/librdkafka/archive/0.9.1.tar.gz
+    tar zxvf 0.9.1.tar.gz
+    cd librdkafka-0.9.1
+    ./configure && make -j $CPUS && make install
 
-# libevent-2.0.22-stable
-mkdir -p /root/source && cd /root/source
-wget https://github.com/libevent/libevent/releases/download/release-2.0.22-stable/libevent-2.0.22-stable.tar.gz
-tar zxvf libevent-2.0.22-stable.tar.gz
-cd libevent-2.0.22-stable
-./configure
-make -j $CPUS
-make install
+    # libevent-2.0.22-stable
+    mkdir -p /root/source && cd /root/source
+    wget https://github.com/libevent/libevent/releases/download/release-2.0.22-stable/libevent-2.0.22-stable.tar.gz
+    tar zxvf libevent-2.0.22-stable.tar.gz
+    cd libevent-2.0.22-stable
+    ./configure
+    make -j $CPUS
+    make install
 
-# btcpool
-mkdir -p /work && cd /work
-git clone https://github.com/btccom/btcpool.git
-cd /work/btcpool
-mkdir build && cd build
+    # btcpool
+    mkdir -p /work && cd /work
+    git clone https://github.com/btccom/btcpool.git
+    cd /work/btcpool
+    mkdir build && cd build
 
 以下内容根据需要2选1
-# Release build:
-cmake -DJOBS=4 -DCHAIN_TYPE=BTC -DCHAIN_SRC_ROOT=/work/bitcoin-0.16.3 ..
-make -j$(nproc)
 
-# Debug build:
-cmake -DCMAKE_BUILD_TYPE=Debug -DCHAIN_TYPE=BTC -DCHAIN_SRC_ROOT=/work/bitcoin-0.16.3 ..
-make -j$(nproc)
+    # Release build:
+    cmake -DJOBS=4 -DCHAIN_TYPE=BTC -DCHAIN_SRC_ROOT=/work/bitcoin-0.16.3 ..
+    make -j$(nproc)
+
+    # Debug build:
+    cmake -DCMAKE_BUILD_TYPE=Debug -DCHAIN_TYPE=BTC -DCHAIN_SRC_ROOT=/work/bitcoin-0.16.3 ..
+    make -j$(nproc)
 
 注意：
 -DCHAIN_TYPE=coin   这里的coin根据你想要编译的币种自行修改(仅BTC、BCH等sha256算法的币需要修改，其他币种ETH，Grin等默认使用BTC)；
@@ -152,94 +153,96 @@ make -j$(nproc)
 启动BTCPool及cgminer测试btcpool
 
 将install目录下的init_folders.sh文件复制到 build目录
-然后执行./init_folders.sh
+然后执行
+    ./init_folders.sh
 以上代码作用为：对编译成功的二进制文件生成相应目录并创建快捷方式
 
-启动gbtmaker
-#配置gbtmaker
-cd /work/btcpool/build/
-mkdir run_gbtmaker
-cd run_gbtmaker/
-vim gbtmaker.cfg
+# 启动gbtmaker
+## 配置gbtmaker
 
-gbtmaker = {
-  rpcinterval = 5;
-  is_check_zmq = true;
-};
-bitcoind = {
-  zmq_addr = "tcp://127.0.0.1:18331";
-  rpc_addr    = "http://127.0.0.1:18332";
-  rpc_userpwd = "bitcoinrpc:xxxx";
-};
-kafka = {
-  brokers = "127.0.0.1:9092";
-};
+    cd /work/btcpool/build/
+    mkdir run_gbtmaker
+    cd run_gbtmaker/
+    vim gbtmaker.cfg
 
-#启动gbtmaker
-cd /work/btcpool/build/run_gbtmaker/
-mkdir log_gbtmaker
-./gbtmaker -c ./gbtmaker.cfg -l ./log_gbtmaker &
-tail -f log_gbtmaker/gbtmaker.INFO
-启动jobmaker
-#配置jobmaker
-cd /work/btcpool/build/
-cd run_jobmaker/
-vim jobmaker.cfg
+    gbtmaker = {
+      rpcinterval = 5;
+      is_check_zmq = true;
+    };
+    bitcoind = {
+      zmq_addr = "tcp://127.0.0.1:18331";
+      rpc_addr    = "http://127.0.0.1:18332";
+      rpc_userpwd = "bitcoinrpc:xxxx";
+    };
+    kafka = {
+      brokers = "127.0.0.1:9092";
+    };
 
-testnet = true;
-jobmaker = {
-  stratum_job_interval = 20;
-  gbt_life_time = 90;
-  empty_gbt_life_time = 15;
-  file_last_job_time = "/work/btcpool/build/run_jobmaker/jobmaker_lastjobtime.txt";
-  block_version = 0;
-};
-kafka = {
-  brokers = "127.0.0.1:9092";
-};
-zookeeper = {
-  brokers = "127.0.0.1:2181";
-};
-pool = {
-  payout_address = "mi9vpXBWJ31WGpRU7n7VJQG4PvTndHBoCN";
-  coinbase_info = "region1/Project BTCPool/";
-};
+## 启动gbtmaker
+    cd /work/btcpool/build/run_gbtmaker/
+    mkdir log_gbtmaker
+    ./gbtmaker -c ./gbtmaker.cfg -l ./log_gbtmaker &
+    tail -f log_gbtmaker/gbtmaker.INFO
+# 启动jobmaker
+## 配置jobmaker
+    cd /work/btcpool/build/
+    cd run_jobmaker/
+    vim jobmaker.cfg
 
-#启动jobmaker
-cd /work/btcpool/build/run_jobmaker/
-mkdir log_jobmaker
-./jobmaker -c ./jobmaker.cfg -l ./log_jobmaker &
-tail -f log_jobmaker/jobmaker.INFO
-启动sserver
-#配置sserver
-cd /work/btcpool/build/
-cd run_sserver/
-vim ./sserver.cfg
+    testnet = true;
+    jobmaker = {
+      stratum_job_interval = 20;
+      gbt_life_time = 90;
+      empty_gbt_life_time = 15;
+      file_last_job_time = "/work/btcpool/build/run_jobmaker/jobmaker_lastjobtime.txt";
+      block_version = 0;
+    };
+    kafka = {
+      brokers = "127.0.0.1:9092";
+    };
+    zookeeper = {
+      brokers = "127.0.0.1:2181";
+    };
+    pool = {
+      payout_address = "mi9vpXBWJ31WGpRU7n7VJQG4PvTndHBoCN";
+      coinbase_info = "region1/Project BTCPool/";
+    };
 
-testnet = true;
-kafka = {
-  brokers = "127.0.0.1:9092";
-};
-sserver = {
-  ip = "0.0.0.0";
-  port = 3333;
-  id = 1;
-  file_last_notify_time = "/work/btcpool/build/run_sserver/sserver_lastnotifytime.txt";
-  enable_simulator = false;
-  enable_submit_invalid_block = false;
-  share_avg_seconds = 10;
-};
-users = {
-  list_id_api_url = "http://index.qubtc.com/apidemo.php";
-};
+## 启动jobmaker
+    cd /work/btcpool/build/run_jobmaker/
+    mkdir log_jobmaker
+    ./jobmaker -c ./jobmaker.cfg -l ./log_jobmaker &
+    tail -f log_jobmaker/jobmaker.INFO
+# 启动sserver
+## 配置sserver
+    cd /work/btcpool/build/
+    cd run_sserver/
+    vim ./sserver.cfg
 
-#启动sserver
-cd /work/btcpool/build/run_sserver/
-mkdir log_sserver
-./sserver -c ./sserver.cfg -l ./log_sserver &
-tail -f log_sserver/sserver.INFO
-cgminer测试btcpool
-#安装cgminer
+    testnet = true;
+    kafka = {
+      brokers = "127.0.0.1:9092";
+    };
+    sserver = {
+      ip = "0.0.0.0";
+      port = 3333;
+      id = 1;
+      file_last_notify_time = "/work/btcpool/build/run_sserver/sserver_lastnotifytime.txt";
+      enable_simulator = false;
+      enable_submit_invalid_block = false;
+      share_avg_seconds = 10;
+    };
+    users = {
+      list_id_api_url = "http://index.qubtc.com/apidemo.php";
+    };
+
+## 启动sserver
+    cd /work/btcpool/build/run_sserver/
+    mkdir log_sserver
+    ./sserver -c ./sserver.cfg -l ./log_sserver &
+    tail -f log_sserver/sserver.INFO
+# cgminer测试btcpool
+## 安装cgminer
 cd /work/
 apt-get -y install build-essential autoconf automake libtool pkg-config libcurl3-dev libudev-dev
 apt-get -y install libusb-1.0-0-dev
