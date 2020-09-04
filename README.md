@@ -252,7 +252,7 @@
     ./configure --enable-cpumining --disable-opencl
     make
 
-# cgminer测试
+## cgminer测试
     ./cgminer --cpu-threads 3 -o stratum+tcp://127.0.0.1:3333 -u jack -p x
 
     ./cgminer --cpu-threads 3 --url 127.0.0.1:3333 --userpass jack:x
@@ -263,7 +263,7 @@
 ## 安装MySQL
 请自行百度
 
-# 配置blkmaker
+## 配置blkmaker
     cd /work/btcpool/build/
     cd run_blkmaker/
     vim blkmaker.cfg
@@ -285,7 +285,7 @@
       dbname = "bpool_local_db";
     };
 
-# 启动blkmaker
+## 启动blkmaker
     cd /work/btcpool/build/run_blkmaker/
     mkdir log_blkmaker
     ./blkmaker -c ./blkmaker.cfg -l ./log_blkmaker &
