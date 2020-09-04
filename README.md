@@ -261,7 +261,7 @@
     #--debug，调试模式
     #--protocol-dump，协议输出
 ## claymore测试ETH币种
-    ./EthDcrMiner64 -epool 127.0.0.1:3333 -ewal jack -epsw x -rxboost 1
+    ./EthDcrMiner64 -epool 127.0.0.1:3333 -ewal jack -epsw x -allpools 1
 # 启动blkmaker
 ## 安装MySQL
 请自行百度
