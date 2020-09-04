@@ -243,50 +243,50 @@
     tail -f log_sserver/sserver.INFO
 # cgminer测试btcpool
 ## 安装cgminer
-cd /work/
-apt-get -y install build-essential autoconf automake libtool pkg-config libcurl3-dev libudev-dev
-apt-get -y install libusb-1.0-0-dev
-git clone https://github.com/ckolivas/cgminer.git
-cd cgminer
-sh autogen.sh
-./configure --enable-cpumining --disable-opencl
-make
+    cd /work/
+    apt-get -y install build-essential autoconf automake libtool pkg-config libcurl3-dev libudev-dev
+    apt-get -y install libusb-1.0-0-dev
+    git clone https://github.com/ckolivas/cgminer.git
+    cd cgminer
+    sh autogen.sh
+    ./configure --enable-cpumining --disable-opencl
+    make
 
-#cgminer测试
-./cgminer --cpu-threads 3 -o stratum+tcp://127.0.0.1:3333 -u jack -p x
+# cgminer测试
+    ./cgminer --cpu-threads 3 -o stratum+tcp://127.0.0.1:3333 -u jack -p x
 
-./cgminer --cpu-threads 3 --url 127.0.0.1:3333 --userpass jack:x
-#./cgminer -o stratum+tcp://127.0.0.1:3333 -u jack -p x --debug --protocol-dump
-#--debug，调试模式
-#--protocol-dump，协议输出
-启动blkmaker
-#安装MySQL
-待补充
+    ./cgminer --cpu-threads 3 --url 127.0.0.1:3333 --userpass jack:x
+    #./cgminer -o stratum+tcp://127.0.0.1:3333 -u jack -p x --debug --protocol-dump
+    #--debug，调试模式
+    #--protocol-dump，协议输出
+# 启动blkmaker
+## 安装MySQL
+请自行百度
 
-#配置blkmaker
-cd /work/btcpool/build/
-cd run_blkmaker/
-vim blkmaker.cfg
+# 配置blkmaker
+    cd /work/btcpool/build/
+    cd run_blkmaker/
+    vim blkmaker.cfg
 
-bitcoinds = (
-{
-  rpc_addr    = "http://127.0.0.1:18332";
-  rpc_userpwd = "bitcoinrpc:xxxx";
-}
-);
-kafka = {
-  brokers = "127.0.0.1:9092";
-};
-pooldb = {
-  host = "localhost";
-  port = 3306;
-  username = "develop";
-  password = "iZ2ze3r0li2kgfvjkvs2xeZ";
-  dbname = "bpool_local_db";
-};
+    bitcoinds = (
+    {
+      rpc_addr    = "http://127.0.0.1:18332";
+      rpc_userpwd = "bitcoinrpc:xxxx";
+    }
+    );
+    kafka = {
+      brokers = "127.0.0.1:9092";
+    };
+    pooldb = {
+      host = "localhost";
+      port = 3306;
+      username = "develop";
+      password = "iZ2ze3r0li2kgfvjkvs2xeZ";
+      dbname = "bpool_local_db";
+    };
 
-#启动blkmaker
-cd /work/btcpool/build/run_blkmaker/
-mkdir log_blkmaker
-./blkmaker -c ./blkmaker.cfg -l ./log_blkmaker &
-tail -f log_blkmaker/blkmaker.INFO
+# 启动blkmaker
+    cd /work/btcpool/build/run_blkmaker/
+    mkdir log_blkmaker
+    ./blkmaker -c ./blkmaker.cfg -l ./log_blkmaker &
+    tail -f log_blkmaker/blkmaker.INFO
