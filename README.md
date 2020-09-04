@@ -241,8 +241,9 @@
     mkdir log_sserver
     ./sserver -c ./sserver.cfg -l ./log_sserver &
     tail -f log_sserver/sserver.INFO
-# cgminer测试btcpool
-## 安装cgminer
+# 测试矿池是否已经正常运作
+## cgminer测试BTC币种
+### 安装cgminer
     cd /work/
     apt-get -y install build-essential autoconf automake libtool pkg-config libcurl3-dev libudev-dev
     apt-get -y install libusb-1.0-0-dev
@@ -252,13 +253,15 @@
     ./configure --enable-cpumining --disable-opencl
     make
 
-## cgminer测试
+### cgminer测试
     ./cgminer --cpu-threads 3 -o stratum+tcp://127.0.0.1:3333 -u jack -p x
 
     ./cgminer --cpu-threads 3 --url 127.0.0.1:3333 --userpass jack:x
     #./cgminer -o stratum+tcp://127.0.0.1:3333 -u jack -p x --debug --protocol-dump
     #--debug，调试模式
     #--protocol-dump，协议输出
+## claymore测试ETH币种
+    ./EthDcrMiner64 -epool 127.0.0.1:3333 -ewal jack -epsw x -rxboost 1
 # 启动blkmaker
 ## 安装MySQL
 请自行百度
