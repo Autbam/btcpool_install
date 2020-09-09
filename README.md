@@ -31,7 +31,7 @@
     #./bitcoin-cli -testnet stop
 
 安装ZooKeeper
-    #Install ZooKeeper
+
     apt-get install -y zookeeper zookeeper-bin zookeeperd
 
     #mkdir for data
