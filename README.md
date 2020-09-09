@@ -17,7 +17,9 @@
     #To Build
     wget https://github.com/bitcoin/bitcoin/archive/v0.16.3.tar.gz
     tar -zxvf v0.16.3.tar.gz
+    
 若我们想要创建非比特币矿池，我们无需对比特币源码进行编译，因此以下命令可以不执行
+
     cd bitcoin-0.16.3/
     ./autogen.sh
     ./configure --with-incompatible-bdb --prefix=/work/bitcoin
@@ -85,6 +87,7 @@
     cd /work/kafka
     nohup /work/kafka/bin/kafka-server-start.sh /work/kafka/config/server.properties > /dev/null 2>&1 &
 安装BTCPool
+
     #Build
     cd /work
 
@@ -122,12 +125,12 @@
 
     # libevent-2.0.22-stable
     mkdir -p /root/source && cd /root/source
-    wget https://github.com/libevent/libevent/releases/download/release-2.0.22-stable/libevent-2.0.22-stable.tar.gz
-    tar zxvf libevent-2.0.22-stable.tar.gz
-    cd libevent-2.0.22-stable
-    ./configure
-    make -j $CPUS
-    make install
+    wget https://github.com/libevent/libevent/releases/download/release-2.1.10-stable/libevent-2.1.10-stable.tar.gz
+    tar zxf libevent-2.1.10-stable.tar.gz
+    cd libevent-2.1.10-stable
+    ./autogen.sh
+    ./configure --disable-shared
+    make -j$(nproc) && make install
 
     # btcpool
     mkdir -p /work && cd /work
@@ -146,6 +149,7 @@
     make -j$(nproc)
 
 注意：
+
 -DCHAIN_TYPE=coin   这里的coin根据你想要编译的币种自行修改(仅BTC、BCH等sha256算法的币需要修改，其他币种ETH，Grin等默认使用BTC)；
 -DCHAIN_SRC_ROOT=bitcoindir 这里的bitcoindir是比特币源码路径，根据需要自行修改
 
@@ -154,6 +158,7 @@
 
 将install目录下的init_folders.sh文件复制到 build目录
 然后执行
+
     ./init_folders.sh
 以上代码作用为：对编译成功的二进制文件生成相应目录并创建快捷方式
 
